@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "fractol.h"
+#include <unistd.h> // for usleep
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -36,9 +37,9 @@ int	valid_fractal(char *name)
 		return (BURNING_SHIP);
 	else if (!ft_strcmp(ft_strlowcase(name), "newton") || !ft_strcmp(name, "6"))
 		return (NEWTON);
-	else if (!ft_strcmp(ft_strlowcase(name), "multibrot") || !ft_strcmp(name, "7"))
-		return (MULTIBROT);
-	else if (!ft_strcmp(ft_strlowcase(name), "mandelbar") || !ft_strcmp(name, "8"))
+	else if (!ft_strcmp(ft_strlowcase(name), "phoenix") || !ft_strcmp(name, "7"))
+		return (PHOENIX);
+	else if (!ft_strcmp(ft_strlowcase(name), "buffalo") || !ft_strcmp(name, "8"))
 		return (MANDELBAR);
 	return (-1);
 }
@@ -101,8 +102,8 @@ void	render_fractal(t_data *data)
 		burning_ship(data);
 	else if (data->fractal_index == NEWTON)
 		newton(data);
-	else if (data->fractal_index == MULTIBROT)
-		multibrot(data);
+	else if (data->fractal_index == PHOENIX)
+		phoenix(data);
 	else if (data->fractal_index == MANDELBAR)
 		mandelbar(data);
 	
@@ -119,6 +120,29 @@ void	start_draw(t_data *data)
 	mlx_loop(data->mlx);
 }
 
+void infinite_zoom(t_data *data)
+{
+	int frames = 200; // Number of zoom steps
+	double zoom_factor = 0.97; // Zoom per frame
+	for (int i = 0; i < frames; i++)
+	{
+		double center_re = (data->min.re + data->max.re) / 2.0;
+		double center_im = (data->min.im + data->max.im) / 2.0;
+		double width = (data->max.re - data->min.re) * zoom_factor;
+		double height = (data->max.im - data->min.im) * zoom_factor;
+		data->min.re = center_re - width / 2.0;
+		data->max.re = center_re + width / 2.0;
+		data->min.im = center_im - height / 2.0;
+		data->max.im = center_im + height / 2.0;
+		data->max_iter = (int)(data->max_iter * 1.005);
+		if (data->max_iter < 10)
+			data->max_iter = 10;
+		render_fractal(data);
+		mlx_do_sync(data->mlx);
+		usleep(20000); // 20ms per frame
+	}
+}
+
 /*
 * check  args => if not, print help
 * if yes, but wrong name => print names
@@ -129,7 +153,7 @@ int	main(int argc, char **argv)
 	t_data		data;
 	int			fractal_index;
 
-	if (argc != 2 && argc != 4)
+	if ((argc != 2 && argc != 4) || (argc == 2 && !ft_strcmp(argv[1], "help")))
 		ft_print_help();
 	else
 	{

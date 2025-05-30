@@ -13,39 +13,65 @@
 #include "fractol.h"
 
 // Helper function to calculate iterations at a specific complex point
-int	calculate_fractal_iterations(t_data *data, t_complex c)
+int	calculate_fractal_iterations(t_data *data, t_complex c_pixel)
 {
-	t_complex	z;
+	t_complex	z_iter; // Renamed z to z_iter to avoid confusion with data->z
 	int			iteration;
 
-	z = init_complex(0, 0);
+	// Initialize z_iter based on the fractal type
+	if (data->fractal_index == JULIA)
+		z_iter = c_pixel; // For Julia, z starts as the pixel coordinate, c is data->c
+	else // For Mandelbrot, Tricorn, Burning Ship (if added here), z starts at 0
+		z_iter = init_complex(0, 0);
+	
 	iteration = 0;
 	while (iteration < data->max_iter)
 	{
+		double temp_re, temp_im;
 		if (data->fractal_index == MANDELBROT)
 		{
-			data->z2.re = z.re * z.re - z.im * z.im;
-			data->z2.im = 2 * z.re * z.im;
-			z.re = data->z2.re + c.re;
-			z.im = data->z2.im + c.im;
+			temp_re = z_iter.re * z_iter.re - z_iter.im * z_iter.im + c_pixel.re;
+			temp_im = 2 * z_iter.re * z_iter.im + c_pixel.im;
+			z_iter.re = temp_re;
+			z_iter.im = temp_im;
 		}
 		else if (data->fractal_index == JULIA)
 		{
-			data->z2.re = z.re * z.re - z.im * z.im;
-			data->z2.im = 2 * z.re * z.im;
-			z.re = data->z2.re + data->c.re;
-			z.im = data->z2.im + data->c.im;
+			// For Julia, c_pixel is the initial z, data->c is the constant
+			temp_re = z_iter.re * z_iter.re - z_iter.im * z_iter.im + data->c.re;
+			temp_im = 2 * z_iter.re * z_iter.im + data->c.im;
+			z_iter.re = temp_re;
+			z_iter.im = temp_im;
 		}
 		else if (data->fractal_index == TRICORN)
 		{
-			data->z2.re = z.re * z.re - z.im * z.im;
-			data->z2.im = -2 * z.re * z.im;
-			z.re = data->z2.re + c.re;
-			z.im = data->z2.im + c.im;
+			temp_re = z_iter.re * z_iter.re - z_iter.im * z_iter.im + c_pixel.re;
+			temp_im = -2 * z_iter.re * z_iter.im + c_pixel.im; // Conjugate's imaginary part
+			z_iter.re = temp_re;
+			z_iter.im = temp_im;
 		}
-		if ((z.re * z.re + z.im * z.im) > 4)
+		// Add other fractals here if they are to be anti-aliased by this function
+		// e.g., Burning Ship:
+		/* else if (data->fractal_index == BURNING_SHIP)
+		{
+			double abs_re = fabs(z_iter.re);
+			double abs_im = fabs(z_iter.im);
+			temp_re = abs_re * abs_re - abs_im * abs_im + c_pixel.re;
+			temp_im = 2 * abs_re * abs_im + c_pixel.im;
+			z_iter.re = temp_re;
+			z_iter.im = temp_im;
+		} */
+
+		if ((z_iter.re * z_iter.re + z_iter.im * z_iter.im) > 4)
+		{
+			data->z2 = z_iter; // Store the z that escaped, for smooth coloring
 			break;
+		}
 		iteration++;
+	}
+	if (iteration == data->max_iter) // If it didn't escape
+	{
+		data->z2 = z_iter; // Store the last z, for smooth coloring
 	}
 	return (iteration);
 }

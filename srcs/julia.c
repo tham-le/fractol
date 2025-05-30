@@ -25,15 +25,15 @@ void	julia(t_data *f)
 		{
 			f->z.im = f->max.im - x.im * f->delta.im;
 			f->z.re = f->min.re + x.re * f->delta.re;
-			f->z2 = init_complex(0, 0);
 			n = -1;
-			while ((++n < f->max_iter) && (f->z2.re + f->z2.im < 4))
+			while ((++n < f->max_iter) && (f->z.re * f->z.re + f->z.im * f->z.im < 4))
 			{
-				f->z2 = init_complex(f->z.re * f->z.re, f->z.im * f->z.im);
-				f->z = init_complex(f->z2.re - f->z2.im + f->c.re,
-						2 * f->z.re * f->z.im + f->c.im);
+				double temp_re = f->z.re * f->z.re - f->z.im * f->z.im + f->c.re;
+				double temp_im = 2 * f->z.re * f->z.im + f->c.im;
+				f->z.re = temp_re;
+				f->z.im = temp_im;
 			}
-			color(f, n, x.re, x.im);
+			color(f, n, x.re, x.im, f->z);
 		}
 	}
 }
@@ -41,11 +41,9 @@ void	julia(t_data *f)
 void	*julia_thread(void *thread_data)
 {
 	t_thread_data	*td = (t_thread_data *)thread_data;
-	t_data			*f = td->data;
-	t_complex		x;
-	int				n;
-	t_complex		z;
-	t_complex		z2;
+	t_data		*f = td->data;
+	t_complex	x, z;
+	int			n;
 
 	x.im = td->start_y - 1;
 	while (++x.im < td->end_y)
@@ -55,15 +53,15 @@ void	*julia_thread(void *thread_data)
 		{
 			z.im = f->max.im - x.im * f->delta.im;
 			z.re = f->min.re + x.re * f->delta.re;
-			z2 = init_complex(0, 0);
 			n = -1;
-			while ((++n < f->max_iter) && (z2.re + z2.im < 4))
+			while ((++n < f->max_iter) && (z.re * z.re + z.im * z.im < 4))
 			{
-				z2 = init_complex(z.re * z.re, z.im * z.im);
-				z = init_complex(z2.re - z2.im + f->c.re,
-						2 * z.re * z.im + f->c.im);
+				double temp_re = z.re * z.re - z.im * z.im + f->c.re;
+				double temp_im = 2 * z.re * z.im + f->c.im;
+				z.re = temp_re;
+				z.im = temp_im;
 			}
-			color(f, n, x.re, x.im);
+			color(f, n, x.re, x.im, z);
 		}
 	}
 	return (NULL);

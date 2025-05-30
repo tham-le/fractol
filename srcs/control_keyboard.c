@@ -103,7 +103,7 @@ void	change_type(int key, t_data *data)
 	if (key == XK_7)
 		data->fractal_index = 7;  // Multibrot
 	if (key == XK_8)
-		data->fractal_index = 8;  // Mandelbar
+		data->fractal_index = 8;  // Buffalo (was Mandelbar)
 	render_fractal(data);
 }
 
@@ -162,4 +162,11 @@ void	handle_export_and_config(int key, t_data *data)
 		printf("Running benchmark...\n");
 		benchmark_fractal(data, 10);
 	}
+}
+
+void change_color_mode(t_data *data)
+{
+	data->color_mode = (data->color_mode + 1) % 3;
+	printf("Color mode: %d\n", data->color_mode);
+	render_fractal(data);
 }

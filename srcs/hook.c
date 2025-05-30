@@ -59,6 +59,8 @@ int	key_press(int key, t_data *data)
 	else if (key == XK_e || key == XK_z || key == XK_x || key == XK_o 
 		|| key == XK_l || key == XK_b)
 		handle_export_and_config(key, data);
+	else if (key == XK_i)
+		infinite_zoom(data);
 	return (0);
 }
 

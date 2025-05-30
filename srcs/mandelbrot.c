@@ -25,16 +25,17 @@ void	mandelbrot(t_data *f)
 		while (++x < W_WIDTH)
 		{
 			f->c.re = f->min.re + x * f->delta.re;
-			f->z = f->c;
-			f->z2 = f->z ;
+			f->z.re = 0;
+			f->z.im = 0;
 			n = -1;
-			while ((++n < f->max_iter) && (f->z2.re + f->z2.im < 4))
+			while ((++n < f->max_iter) && (f->z.re * f->z.re + f->z.im * f->z.im < 4))
 			{
-				f->z2 = init_complex(f->z.re * f->z.re, f->z.im * f->z.im);
-				f->z = init_complex(f->z2.re - f->z2.im + f->c.re,
-						2 * f->z.re * f->z.im + f->c.im);
+				double temp_re = f->z.re * f->z.re - f->z.im * f->z.im + f->c.re;
+				double temp_im = 2 * f->z.re * f->z.im + f->c.im;
+				f->z.re = temp_re;
+				f->z.im = temp_im;
 			}
-			color(f, n, x, y);
+			color(f, n, x, y, f->z);
 		}
 	}
 }
@@ -42,13 +43,9 @@ void	mandelbrot(t_data *f)
 void	*mandelbrot_thread(void *thread_data)
 {
 	t_thread_data	*td = (t_thread_data *)thread_data;
-	t_data			*f = td->data;
-	int				x;
-	int				y;
-	int				n;
-	t_complex		c;
-	t_complex		z;
-	t_complex		z2;
+	t_data		*f = td->data;
+	int			x, y, n;
+	t_complex	c, z;
 
 	y = td->start_y - 1;
 	while (++y < td->end_y)
@@ -58,16 +55,17 @@ void	*mandelbrot_thread(void *thread_data)
 		while (++x < W_WIDTH)
 		{
 			c.re = f->min.re + x * f->delta.re;
-			z = c;
-			z2 = z;
+			z.re = 0;
+			z.im = 0;
 			n = -1;
-			while ((++n < f->max_iter) && (z2.re + z2.im < 4))
+			while ((++n < f->max_iter) && (z.re * z.re + z.im * z.im < 4))
 			{
-				z2 = init_complex(z.re * z.re, z.im * z.im);
-				z = init_complex(z2.re - z2.im + c.re,
-						2 * z.re * z.im + c.im);
+				double temp_re = z.re * z.re - z.im * z.im + c.re;
+				double temp_im = 2 * z.re * z.im + c.im;
+				z.re = temp_re;
+				z.im = temp_im;
 			}
-			color(f, n, x, y);
+			color(f, n, x, y, z);
 		}
 	}
 	return (NULL);

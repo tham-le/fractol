@@ -13,14 +13,14 @@
 
 void	fractal_list(void)
 {
-	ft_putendl("\033[32;1m\tUsage: ./fractol <fractal_name>\033[0;36m");
+	ft_putendl("\033[32;1m\tUsage: ./fractol <fractal_name or number>\033[0;36m");
 	ft_putendl("\tAvailable fractals:");
 	ft_putendl("\t1 - Mandelbrot\n\t2 - Julia\n\t3 - Barnsley\n\t4 - Tricorn");
-	ft_putendl("\t5 - Burning Ship\n\t6 - Newton\n\t7 - Multibrot\n\t8 - Mandelbar");
-	ft_putendl("<fractal_name> ignore UPPERCASE or lowercase\n");
+	ft_putendl("\t5 - Burning Ship\n\t6 - Newton\n\t7 - Phoenix\n\t8 - Buffalo");
+	ft_putendl("You can use either the name or the number for <fractal_name> (e.g. ./fractol 1 or ./fractol mandelbrot)\n");
 	ft_putendl("For Julia, you may specify starting values for the");
 	ft_putendl("initial fractal shape. Values must contain a decimal point");
-	ft_putendl("\033[32;1m\tExample: ./fractol julia 0.285 0.01\033[0;36m");
+	ft_putendl("\033[32;1m\tExample: ./fractol julia 0.285 0.01 or ./fractol 2 0.285 0.01\033[0;36m");
 }
 
 static void	keyboard_controls(void)
@@ -32,7 +32,7 @@ static void	keyboard_controls(void)
 	ft_putendl("\t- Reset view point (R)");
 	ft_putendl("\n\t\033[33mFractal Selection:\033[36m");
 	ft_putendl("\t- Select fractal (1-8): 1=Mandelbrot, 2=Julia, 3=Barnsley,");
-	ft_putendl("\t  4=Tricorn, 5=Burning Ship, 6=Newton, 7=Multibrot, 8=Mandelbar");
+	ft_putendl("\t  4=Tricorn, 5=Burning Ship, 6=Newton, 7=Phoenix, 8=Mandelbar");
 	ft_putendl("\n\t\033[33mRendering Options:\033[36m");
 	ft_putendl("\t- Change color set (C) - 15 different palettes available");
 	ft_putendl("\t- Change maximum iterations (+, -)");

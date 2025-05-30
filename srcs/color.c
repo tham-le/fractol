@@ -95,26 +95,28 @@ int	hsv_to_rgb(double h, double s, double v)
 }
 
 // Smooth color interpolation
-int	get_smooth_color(double iteration, t_data *data)
+int get_smooth_color(double iteration, t_complex z, t_data *data)
 {
-	double	smooth_iter;
-	double	t;
-	double	h, s, v;
-
 	if (iteration >= data->max_iter)
-		return (0x000000);
-	
-	// Use magnitude of z for smooth coloring
-	double magnitude = sqrt(data->z2.re + data->z2.im);
-	smooth_iter = iteration + 1 - log(log(magnitude)) / log(2);
-	t = fmod(smooth_iter * 0.05, 1.0);
-	
-	// Create smooth HSV gradient
-	h = fmod((t * 360.0 + data->color_shift * 40), 360.0);
-	s = 0.8 + 0.2 * sin(t * 6.28);
-	v = 0.5 + 0.5 * t;
-	
-	return (hsv_to_rgb(h, s, v));
+		return 0x000000;
+
+	// Use squared magnitude for stability
+	double mag2 = z.re * z.re + z.im * z.im;
+	if (mag2 < 1e-8)
+		mag2 = 1e-8;
+
+	// Standard smooth coloring formula
+	double smooth_iter = iteration + 1 - log2(log2(mag2) / 2.0);
+
+	// Normalize t to [0,1] for color mapping
+	double t = fmod(smooth_iter * 0.05, 1.0);
+
+	// HSV gradient (as before)
+	double h = fmod((t * 360.0 + data->color_shift * 40), 360.0);
+	double s = 0.8 + 0.2 * sin(t * 6.28);
+	double v = 0.5 + 0.5 * t;
+
+	return hsv_to_rgb(h, s, v);
 }
 
 // Fire palette
@@ -149,37 +151,128 @@ int	get_ice_palette(int iteration, t_data *data)
 	return (ice_colors[index % 10]);
 }
 
+// Psychedelic palette (sine wave based)
+int get_psychedelic_palette(int n, t_data *data) {
+	double t = (double)n / data->max_iter;
+	int r = (int)(128 + 127 * sin(6.28 * t + data->color_shift));
+	int g = (int)(128 + 127 * sin(6.28 * t * 2 + data->color_shift + 2));
+	int b = (int)(128 + 127 * sin(6.28 * t * 3 + data->color_shift + 4));
+	return create_trgb(0, r, g, b);
+}
+
+// Autumn palette
+int get_autumn_palette(int n, t_data *data) {
+	(void)data;
+	const int autumn[5] = {0xFF7700, 0xFFB300, 0xFFD700, 0xFF6F00, 0xA0522D};
+	return autumn[n % 5];
+}
+
+// Ocean palette
+int get_ocean_palette(int n, t_data *data) {
+	(void)data;
+	const int ocean[5] = {0x022859, 0x1768AC, 0x44C2FD, 0x1B9AAA, 0x0D3B66};
+	return ocean[n % 5];
+}
+
+// Forest palette
+int get_forest_palette(int n, t_data *data) {
+	(void)data;
+	const int forest[5] = {0x154406, 0x38761D, 0x6AA84F, 0xB6D7A8, 0x783F04};
+	return forest[n % 5];
+}
+
+// Greyscale palette
+int get_greyscale_palette(int n, t_data *data) {
+	int v = (int)(255.0 * n / data->max_iter);
+	return create_trgb(0, v, v, v);
+}
+
+// Inverted palette
+int get_inverted_palette(int n, t_data *data) {
+	int base = get_color_default(n, data);
+	int r = 255 - ((base >> 16) & 0xFF);
+	int g = 255 - ((base >> 8) & 0xFF);
+	int b = 255 - (base & 0xFF);
+	return create_trgb(0, r, g, b);
+}
+
+// Angle-based coloring (color_shift 15)
+int get_angle_color(int n, t_complex z, t_data *data) {
+	if (n >= data->max_iter)
+		return 0x222222;
+	double angle = atan2(z.im, z.re);
+	double norm = (angle + M_PI) / (2 * M_PI); // Normalize to [0,1]
+	int hue = (int)(norm * 360.0);
+	return hsv_to_rgb(hue, 1.0, 1.0);
+}
+
+// Orbit trap coloring (color_shift 16)
+int get_orbit_trap_color(int n, t_complex z, t_data *data) {
+	if (n >= data->max_iter)
+		return 0x222222;
+	double dist = fabs(z.im); // Distance to real axis
+	double norm = fmin(dist * 10, 1.0); // Clamp for color effect
+	int hue = (int)(norm * 240.0); // Blue for close, red for far
+	return hsv_to_rgb(hue, 1.0, 1.0 - norm * 0.5);
+}
+
+// Distance estimation coloring (color_shift 17)
+int get_distance_est_color(int n, t_complex z, t_data *data) {
+	if (n >= data->max_iter)
+		return 0x222222;
+	double modulus = sqrt(z.re * z.re + z.im * z.im);
+	double dist = 2.0 * modulus * log(modulus) / fabs(z.re * z.re + z.im * z.im);
+	double norm = fmin(dist * 0.5, 1.0);
+	int hue = (int)(norm * 360.0);
+	return hsv_to_rgb(hue, 1.0, 1.0 - norm * 0.3);
+}
+
 // Enhanced color function with new palettes
 int	get_enhanced_color(int iteration, t_data *data)
 {
-	if (data->color_shift >= 6 && data->color_shift <= 8)
+	if (data->color_shift >= COLOR_SHIFT_FIRE && data->color_shift <= COLOR_SHIFT_AUTUMN)
 		return (get_fire_palette(iteration, data));
-	else if (data->color_shift >= 9 && data->color_shift <= 11)
+	else if (data->color_shift >= COLOR_SHIFT_ICE && data->color_shift <= COLOR_SHIFT_FOREST)
 		return (get_ice_palette(iteration, data));
-	else if (data->color_shift >= 12)
-		return (get_smooth_color((double)iteration, data));
+	else if (data->color_shift >= COLOR_SHIFT_SMOOTH_HSV)
+		return (get_smooth_color((double)iteration, data->z2, data));
 	else
 		return (get_color_2(iteration, data));
 }
 
-void	color(t_data *data, int n, int x, int y)
-{	
+// Remove angle and orbit trap color modes from get_palette_color
+int get_palette_color(int n, t_complex z, t_data *data) {
+	if (n >= data->max_iter)
+		return 0x222222; // Neutral gray for inside set
+	switch (data->color_shift) {
+		case COLOR_SHIFT_DEFAULT_1: return get_color_default(n, data); // Default 1
+		case COLOR_SHIFT_DEFAULT_2: return get_color_default(n, data); // Default 2 (channel shift)
+		case COLOR_SHIFT_DEFAULT_3: return get_color_default(n, data); // Default 3 (channel shift)
+		case COLOR_SHIFT_RAINBOW: return get_color_palette(n, data); // Rainbow
+		case COLOR_SHIFT_PASTEL: return get_color_palette(n, data); // pal_2 (pastel)
+		case COLOR_SHIFT_BEACH: return get_color_palette(n, data); // Beach
+		case COLOR_SHIFT_FIRE: return get_fire_palette(n, data); // Fire
+		case COLOR_SHIFT_PSYCHEDELIC: return get_psychedelic_palette(n, data); // Psychedelic
+		case COLOR_SHIFT_AUTUMN: return get_autumn_palette(n, data); // Autumn
+		case COLOR_SHIFT_ICE: return get_ice_palette(n, data); // Ice
+		case COLOR_SHIFT_OCEAN: return get_ocean_palette(n, data); // Ocean
+		case COLOR_SHIFT_FOREST: return get_forest_palette(n, data); // Forest
+		case COLOR_SHIFT_SMOOTH_HSV: return get_smooth_color((double)n, z, data); // Smooth HSV
+		case COLOR_SHIFT_GREYSCALE: return get_greyscale_palette(n, data); // Greyscale
+		case COLOR_SHIFT_INVERTED: return get_inverted_palette(n, data); // Inverted
+		case COLOR_SHIFT_ANGLE: return get_angle_color(n, z, data); // Angle-based
+		case COLOR_SHIFT_ORBIT_TRAP: return get_orbit_trap_color(n, z, data); // Orbit trap
+		case COLOR_SHIFT_DISTANCE_EST: return get_distance_est_color(n, z, data); // Distance estimation
+		default: return get_color_default(n, data);
+	}
+}
+
+void color(t_data *data, int n, int x, int y, t_complex z)
+{
 	if (data->use_antialiasing)
 		color_with_antialiasing(data, n, x, y);
 	else
 	{
-		if (data->fractal_index == BARNSLEY)
-			data->color_shift = data->color_shift % 3 + 3;
-		if (n == data->max_iter && data->fractal_index != BARNSLEY)
-			my_mlx_pixel_put(data, x, y, 0x0000000);
-		else
-		{
-			if (data->color_shift <= 2)
-				my_mlx_pixel_put(data, x, y, get_color_default(n, data));
-			else if (data->color_shift < 6)
-				my_mlx_pixel_put(data, x, y, get_color_palette(n, data));
-			else
-				my_mlx_pixel_put(data, x, y, get_enhanced_color(n, data));
-		}
+		my_mlx_pixel_put(data, x, y, get_palette_color(n, z, data));
 	}
 }
