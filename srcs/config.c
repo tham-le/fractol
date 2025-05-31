@@ -1,21 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   config.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: thi-le <thi-le@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/25 10:00:00 by thi-le            #+#    #+#             */
-/*   Updated: 2023/01/25 10:00:00 by thi-le           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "fractol.h"
 #include <string.h>
 
 #define CONFIG_FILE "fractol_config.ini"
 
-// Save current configuration to file
 int	save_config(t_data *data, const char *filename)
 {
 	FILE *file = fopen(filename, "w");
@@ -43,7 +32,6 @@ int	save_config(t_data *data, const char *filename)
 	return (0);
 }
 
-// Load configuration from file
 int	load_config(t_data *data, const char *filename)
 {
 	FILE	*file;
@@ -95,7 +83,6 @@ int	load_config(t_data *data, const char *filename)
 	return (0);
 }
 
-// Save preset with custom name
 void	save_preset(t_data *data, const char *name)
 {
 	char	filename[100];
@@ -124,7 +111,6 @@ void	save_preset(t_data *data, const char *name)
 	printf("Preset saved as %s\n", filename);
 }
 
-// Load preset by name
 void	load_preset(t_data *data, const char *name)
 {
 	char	filename[100];

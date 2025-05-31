@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   additional_fractals.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: thi-le <thi-le@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/25 10:00:00 by thi-le            #+#    #+#             */
-/*   Updated: 2023/01/25 10:00:00 by thi-le           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "fractol.h"
 
-// Burning Ship fractal
+
 void	burning_ship(t_data *f)
 {
 	int x, y, n;
@@ -43,7 +31,6 @@ void	burning_ship(t_data *f)
 	}
 }
 
-// Helper function for complex power
 t_complex	complex_power(t_complex z, int n)
 {
 	double	r;
@@ -73,10 +60,8 @@ t_complex	complex_power(t_complex z, int n)
 	return (init_complex(new_r * cos(new_theta), new_r * sin(new_theta)));
 }
 
-// Check convergence for Newton fractal
 int	check_newton_convergence(t_complex z)
 {
-	// Check convergence to the three cube roots of unity
 	t_complex roots[3] = {
 		{1.0, 0.0},
 		{-0.5, 0.866025},
@@ -93,7 +78,6 @@ int	check_newton_convergence(t_complex z)
 	return (0);
 }
 
-// Newton fractal for z^3 - 1 = 0
 void	newton(t_data *f)
 {
 	int x, y, n;
@@ -124,7 +108,6 @@ void	newton(t_data *f)
 	}
 }
 
-// Buffalo fractal (now cubic for uniqueness)
 void	buffalo(t_data *f)
 {
 	int x, y, n;
@@ -157,10 +140,8 @@ void	buffalo(t_data *f)
 	}
 }
 
-// Mandelbar now calls Buffalo for uniqueness
 void mandelbar(t_data *f) { buffalo(f); }
 
-// Phoenix fractal
 void	phoenix(t_data *f)
 {
 	int x, y, n;
@@ -193,7 +174,6 @@ void	phoenix(t_data *f)
 	}
 }
 
-// Helper function for complex division
 t_complex	complex_divide(t_complex a, t_complex b)
 {
 	double	denominator;
@@ -208,40 +188,11 @@ t_complex	complex_divide(t_complex a, t_complex b)
 	));
 }
 
-/*
-// Multibrot sets (generalization of Mandelbrot)
-void	multibrot(t_data *f) // This is line 68 in the original file.
+void multibrot(t_data *f)
 {
-	int x, y, n, power = 3;
-	t_complex c, z;
-	y = -1;
-	while (++y < W_HEIGHT)
-	{
-		x = -1;
-		c.im = f->max.im - y * f->delta.im;
-		while (++x < W_WIDTH)
-		{
-			c.re = f->min.re + x * f->delta.re;
-			z = c;
-			n = -1;
-			while ((++n < f->max_iter) && (z.re * z.re + z.im * z.im < 4))
-			{
-				t_complex temp = complex_power(z, power);
-				z = init_complex(temp.re + c.re, temp.im + c.im);
-			}
-			color(f, n, x, y, z);
-		}
-	}
-}
-*/
-
-// Multibrot sets (generalization of Mandelbrot) from improvements/
-// Default power can be set in t_data or via a new mechanism
-void multibrot(t_data *f) // Changed signature for now, will adapt power later
-{
-    t_complex x_loop; // Use different name to avoid conflict if x,y are fields in t_data
+    t_complex x_loop;
     int n_iter;
-    int power = f->fractal_power; // Assuming fractal_power exists in t_data
+    int power = f->fractal_power;
 
     x_loop.im = -1;
     while (++x_loop.im < W_HEIGHT)

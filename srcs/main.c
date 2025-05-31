@@ -70,26 +70,24 @@ int	get_julia_param(t_data *data, int argc, char **argv)
 }
 
 /*
-* Calculate and render fractal - used for re-rendering during interactions
+* Calculate and render fractal
 */
 void	render_fractal(t_data *data)
 {
-	profiler_start(); // Profiling start
+	profiler_start();
 
 	data->delta.re = (data->max.re - data->min.re) / (W_WIDTH - 1);
 	data->delta.im = (data->max.im - data->min.im) / (W_HEIGHT - 1);
 	
-	// Special handling for Barnsley Fern - it draws directly
 	if (data->fractal_index == BARNSLEY)
 	{
-		barnsley(data); // Assumes barnsley calls my_mlx_pixel_put directly
+		barnsley(data);
 		profiler_end(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 		mlx_do_sync(data->mlx);
 		return;
 	}
 
-	// Call the appropriate fractal generation function (populates buffers)
 	if (data->fractal_index == MANDELBROT)
 	{
 		if (data->use_threading)
@@ -122,7 +120,6 @@ void	render_fractal(t_data *data)
 	else if (data->fractal_index == MULTIBROT)
 		multibrot(data);
 
-	// Now, color the pixels from the buffers
 	render_pixels_from_buffer(data);
 	
 	profiler_end(data); // Profiling end
@@ -142,8 +139,8 @@ void	start_draw(t_data *data)
 
 void infinite_zoom(t_data *data)
 {
-	int frames = 200; // Number of zoom steps
-	double zoom_factor = 0.97; // Zoom per frame
+	int frames = 200;
+	double zoom_factor = 0.97;
 	for (int i = 0; i < frames; i++)
 	{
 		double center_re = (data->min.re + data->max.re) / 2.0;
@@ -159,7 +156,7 @@ void infinite_zoom(t_data *data)
 			data->max_iter = 10;
 		render_fractal(data);
 		mlx_do_sync(data->mlx);
-		usleep(20000); // 20ms per frame
+		usleep(20000);
 	}
 }
 

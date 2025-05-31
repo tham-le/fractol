@@ -19,7 +19,6 @@
 #include <string.h>
 #include <math.h>
 
-// Simple BMP export function
 int	export_bmp(t_data *data, const char *filename)
 {
 	FILE	*file;
@@ -59,15 +58,14 @@ int	export_bmp(t_data *data, const char *filename)
 	fwrite("\0\0\0\0", 4, 1, file);
 	fwrite("\0\0\0\0", 4, 1, file);
 	
-	// Write pixel data (BGR format, bottom to top)
 	for (int y = W_HEIGHT - 1; y >= 0; y--)
 	{
 		for (int x = 0; x < W_WIDTH; x++)
 		{
 			int color = *(int*)(data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8)));
-			fputc((color & 0xFF), file);        // Blue
-			fputc((color >> 8) & 0xFF, file);   // Green
-			fputc((color >> 16) & 0xFF, file);  // Red
+			fputc((color & 0xFF), file);
+			fputc((color >> 8) & 0xFF, file);
+			fputc((color >> 16) & 0xFF, file);
 		}
 		for (int p = 0; p < padding; p++)
 			fputc(0, file);
@@ -78,7 +76,6 @@ int	export_bmp(t_data *data, const char *filename)
 	return (0);
 }
 
-// Export current fractal with timestamp
 void	quick_export(t_data *data)
 {
 	char		filename[100];
@@ -95,7 +92,6 @@ void	quick_export(t_data *data)
 	export_bmp(data, filename);
 }
 
-// Create zoom animation sequence
 void	create_zoom_animation(t_data *data, const char *prefix, int frames)
 {
 	char		filename[100];
@@ -104,7 +100,6 @@ void	create_zoom_animation(t_data *data, const char *prefix, int frames)
 	t_complex	center;
 	double		zoom_factor = 2.0;
 	
-	// Get current center point
 	center.re = (data->min.re + data->max.re) / 2;
 	center.im = (data->min.im + data->max.im) / 2;
 	
@@ -140,7 +135,6 @@ void	create_zoom_animation(t_data *data, const char *prefix, int frames)
 	printf("Animation sequence complete!\n");
 }
 
-// PPM export (simpler format) - Adapted from improvements/
 void	export_ppm(t_data *data, const char *filename)
 {
     FILE *file = fopen(filename, "w");
@@ -154,7 +148,6 @@ void	export_ppm(t_data *data, const char *filename)
     
     for (int y = 0; y < W_HEIGHT; y++) {
         for (int x = 0; x < W_WIDTH; x++) {
-            // Read pixel data from data->addr, similar to export_bmp
             int color = *(int*)(data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8)));
             int r = (color >> 16) & 0xFF;
             int g = (color >> 8) & 0xFF;
@@ -168,7 +161,6 @@ void	export_ppm(t_data *data, const char *filename)
     printf("Exported fractal to %s (PPM format)\n", filename);
 }
 
-// Export image dispatcher - From improvements/
 void export_image(t_data *data, const char *filename_base, const char *format)
 {
     char filename_with_ext[128];
@@ -184,7 +176,6 @@ void export_image(t_data *data, const char *filename_base, const char *format)
     }
 }
 
-// Create color animation sequence
 void	create_color_animation(t_data *data, const char *prefix, int frames)
 {
 	char	filename[100];

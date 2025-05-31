@@ -1,20 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   animation.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: thi-le <thi-le@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/12 12:00:00 by Your Name         #+#    #+#             */
-/*   Updated: 2023/03/12 12:00:00 by Your Name         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+// this is not necessary for the project, but it's a fun animation to watch
 #include "fractol.h"
 #include <unistd.h>
 #include <math.h>
 
-// Enhanced infinite zoom with better targeting and smooth transitions
 void enhanced_infinite_zoom(t_data *data)
 {
 	int frames = 300;
@@ -67,7 +55,6 @@ void enhanced_infinite_zoom(t_data *data)
 	}
 }
 
-// Spiral zoom animation - zoom while rotating the view
 void spiral_zoom_animation(t_data *data)
 {
 	int frames = 300;
@@ -214,18 +201,15 @@ void fractal_showcase_animation(t_data *data)
 	render_fractal(data);
 }
 
-// Color palette animation - clean showcase without ugly effects
 void color_palette_showcase(t_data *data)
 {
 	int original_palette = data->color_shift;
 	int frames_per_palette = 80; // Longer display time for each palette
 	
-	// Set up a nice viewing area that works well with all fractals
 	t_complex original_min = data->min;
 	t_complex original_max = data->max;
 	int original_iterations = data->max_iter;
 	
-	// Choose optimal view based on fractal type
 	if (data->fractal_index == MANDELBROT) {
 		data->min.re = -2.0; data->min.im = -1.2;
 		data->max.re = 1.0; data->max.im = 1.2;
@@ -239,7 +223,6 @@ void color_palette_showcase(t_data *data)
 		data->max.re = 1.0; data->max.im = 0.5;
 		data->max_iter = 180;
 	} else {
-		// Keep original view for other fractals
 		data->max_iter = 150;
 	}
 	
@@ -249,9 +232,8 @@ void color_palette_showcase(t_data *data)
 		
 		for (int i = 0; i < frames_per_palette; i++)
 		{
-			// Simple, subtle effect - slight zoom for dynamic feel
 			if (i > 10 && i < frames_per_palette - 10) {
-				double zoom_factor = 1.0 + 0.0001 * sin((double)i * 0.1); // Very subtle zoom
+				double zoom_factor = 1.0 + 0.0001 * sin((double)i * 0.1);
 				double center_re = (data->min.re + data->max.re) / 2.0;
 				double center_im = (data->min.im + data->max.im) / 2.0;
 				double width = (data->max.re - data->min.re) * zoom_factor;
