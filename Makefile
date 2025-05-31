@@ -29,8 +29,8 @@ AR			= ar rcs
 SRC_FILES	=	main print_help color mandelbrot init \
 				clean hook control_keyboard julia\
 				control_mouse barnsley tricorn threading \
-				antialiasing export config profiling \
-				additional_fractals
+				antialiasing export config benchmark \
+				additional_fractals animation
 
 
 SRC 		= 	$(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))

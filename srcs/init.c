@@ -43,7 +43,53 @@ void	*init_defaults(t_data *f)
 	f->julia_set = 0;
 	f->use_threading = 1;
 	f->use_antialiasing = 0;
+	f->fractal_power = 2;
+	f->pan_active = 0;
+	f->pan_start_coord = init_complex(0,0);
 	return (0);
+}
+
+int allocate_render_buffers(t_data *data)
+{
+	data->iteration_buffer = (int **)malloc(sizeof(int *) * W_HEIGHT);
+	data->z_buffer = (t_complex **)malloc(sizeof(t_complex *) * W_HEIGHT);
+	if (!data->iteration_buffer || !data->z_buffer)
+		return (1);
+	for (int i = 0; i < W_HEIGHT; i++)
+	{
+		data->iteration_buffer[i] = (int *)malloc(sizeof(int) * W_WIDTH);
+		data->z_buffer[i] = (t_complex *)malloc(sizeof(t_complex) * W_WIDTH);
+		if (!data->iteration_buffer[i] || !data->z_buffer[i])
+		{
+			for (int j = 0; j < i; j++)
+			{
+				free(data->iteration_buffer[j]);
+				free(data->z_buffer[j]);
+			}
+			free(data->iteration_buffer);
+			free(data->z_buffer);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+void free_render_buffers(t_data *data)
+{
+	if (data->iteration_buffer)
+	{
+		for (int i = 0; i < W_HEIGHT; i++)
+			free(data->iteration_buffer[i]);
+		free(data->iteration_buffer);
+		data->iteration_buffer = NULL;
+	}
+	if (data->z_buffer)
+	{
+		for (int i = 0; i < W_HEIGHT; i++)
+			free(data->z_buffer[i]);
+		free(data->z_buffer);
+		data->z_buffer = NULL;
+	}
 }
 
 /*
@@ -64,6 +110,8 @@ void	*init_img(t_data *data, char *argv)
 		free_all_error(data, 4, ERR_IMAGE_INIT);
 	data->addr = mlx_get_data_addr(data->img, &data->bits_per_pixel,
 			&data->line_length, &data->endian);
+	if (allocate_render_buffers(data) != 0)
+		free_all_error(data, 5, ERR_MALLOC);
 	return (0);
 }
 

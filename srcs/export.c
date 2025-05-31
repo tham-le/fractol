@@ -11,8 +11,12 @@
 /* ************************************************************************** */
 
 #include "fractol.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include <sys/time.h>
 #include <time.h>
+#include <string.h>
 #include <math.h>
 
 // Simple BMP export function
@@ -136,6 +140,50 @@ void	create_zoom_animation(t_data *data, const char *prefix, int frames)
 	printf("Animation sequence complete!\n");
 }
 
+// PPM export (simpler format) - Adapted from improvements/
+void	export_ppm(t_data *data, const char *filename)
+{
+    FILE *file = fopen(filename, "w");
+    if (!file)
+    {
+        printf("Error: Could not open %s for PPM export\n", filename);
+        return;
+    }
+    
+    fprintf(file, "P3\n%d %d\n255\n", W_WIDTH, W_HEIGHT);
+    
+    for (int y = 0; y < W_HEIGHT; y++) {
+        for (int x = 0; x < W_WIDTH; x++) {
+            // Read pixel data from data->addr, similar to export_bmp
+            int color = *(int*)(data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8)));
+            int r = (color >> 16) & 0xFF;
+            int g = (color >> 8) & 0xFF;
+            int b = color & 0xFF;
+            fprintf(file, "%d %d %d ", r, g, b);
+        }
+        fprintf(file, "\n");
+    }
+    
+    fclose(file);
+    printf("Exported fractal to %s (PPM format)\n", filename);
+}
+
+// Export image dispatcher - From improvements/
+void export_image(t_data *data, const char *filename_base, const char *format)
+{
+    char filename_with_ext[128];
+
+    snprintf(filename_with_ext, sizeof(filename_with_ext), "%s.%s", filename_base, format);
+
+    if (strcmp(format, "bmp") == 0) {
+        export_bmp(data, filename_with_ext); // Uses existing export_bmp
+    } else if (strcmp(format, "ppm") == 0) {
+        export_ppm(data, filename_with_ext); // Uses new export_ppm
+    } else {
+        printf("Error: Unsupported export format '%s'\n", format);
+    }
+}
+
 // Create color animation sequence
 void	create_color_animation(t_data *data, const char *prefix, int frames)
 {
@@ -147,7 +195,7 @@ void	create_color_animation(t_data *data, const char *prefix, int frames)
 	
 	for (int frame = 0; frame < frames; frame++)
 	{
-		data->color_shift = frame % 15; // Cycle through all 15 color palettes
+		data->color_shift = frame % MAX_COLOR_PALETTES;
 		render_fractal(data);
 		
 		snprintf(filename, sizeof(filename), "%s_frame_%04d.bmp", prefix, frame);
@@ -156,7 +204,7 @@ void	create_color_animation(t_data *data, const char *prefix, int frames)
 		printf("Frame %d/%d completed\n", frame + 1, frames);
 	}
 	
-	// Restore original color scheme
+	// Restore original color palette
 	data->color_shift = original_color_shift;
 	render_fractal(data);
 	printf("Color animation sequence complete!\n");

@@ -50,8 +50,11 @@ void	barnsley(t_data *data)
 	{
 		x.re = ((int)((data->c.re - data->min.re) / data->delta.re));
 		x.im = -1 * ((int)((data->c.im - data->max.im) / data->delta.im));
-		if (x.re < W_WIDTH && x.im < W_HEIGHT && x.re > 0 && x.im > 0)
-			color(data, i % 3, x.re, x.im);
+		if (x.re >= 0 && x.re < W_WIDTH && x.im >= 0 && x.im < W_HEIGHT)
+		{
+			int point_color = get_color_default(i % 3, data); 
+			my_mlx_pixel_put(data, (int)x.re, (int)x.im, point_color);
+		}
 		next_point(&data->c, rand() % 101);
 	}
 }

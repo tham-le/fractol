@@ -60,9 +60,27 @@ void	change_max_iteration(int key, t_data *data)
 	render_fractal(data);
 }
 
+void	change_multibrot_power(int key, t_data *data)
+{
+	if (data->fractal_index == MULTIBROT)
+	{
+		if (key == XK_Page_Up)
+		{
+			if (data->fractal_power < 10)
+				data->fractal_power++;
+		}
+		else if (key == XK_Page_Down)
+		{
+			if (data->fractal_power > 2)
+				data->fractal_power--;
+		}
+		render_fractal(data);
+	}
+}
+
 void	change_color_shift(t_data *data)
 {
-	data->color_shift = (data->color_shift + 1) % 15;
+	data->color_shift = (data->color_shift + 1) % MAX_COLOR_PALETTES;
 	render_fractal(data);
 }
 
@@ -70,7 +88,7 @@ void	change_param_key(int key, t_data *data)
 {
 	if (key == XK_d)
 		data->c.re *= 1.1;
-	if (key == XK_a)
+	if (key == XK_q)
 		data->c.re *= 0.9;
 	if (key == XK_w)
 		data->c.im *= 1.1;
@@ -97,13 +115,13 @@ void	change_type(int key, t_data *data)
 	if (key == XK_4)
 		data->fractal_index = 4;
 	if (key == XK_5)
-		data->fractal_index = 5;  // Burning Ship
+		data->fractal_index = 5;
 	if (key == XK_6)
-		data->fractal_index = 6;  // Newton
+		data->fractal_index = 6;
 	if (key == XK_7)
-		data->fractal_index = 7;  // Multibrot
+		data->fractal_index = 7;
 	if (key == XK_8)
-		data->fractal_index = 8;  // Buffalo (was Mandelbar)
+		data->fractal_index = 8;
 	render_fractal(data);
 }
 
@@ -114,7 +132,6 @@ void	handle_export_and_config(int key, t_data *data)
 	
 	if (key == XK_e)
 	{
-		// Export current fractal as BMP
 		sprintf(filename, "fractal_%d.bmp", ++export_counter);
 		if (export_bmp(data, filename) == 0)
 			printf("Fractal exported to %s\n", filename);
@@ -123,7 +140,6 @@ void	handle_export_and_config(int key, t_data *data)
 	}
 	else if (key == XK_z)
 	{
-		// Create zoom animation
 		sprintf(filename, "zoom_anim_%d", ++export_counter);
 		printf("Creating zoom animation (this may take a while)...\n");
 		create_zoom_animation(data, filename, 30);
@@ -131,7 +147,6 @@ void	handle_export_and_config(int key, t_data *data)
 	}
 	else if (key == XK_x)
 	{
-		// Create color animation
 		sprintf(filename, "color_anim_%d", ++export_counter);
 		printf("Creating color animation...\n");
 		create_color_animation(data, filename, 15);
@@ -139,7 +154,6 @@ void	handle_export_and_config(int key, t_data *data)
 	}
 	else if (key == XK_o)
 	{
-		// Save configuration
 		if (save_config(data, "fractal_config.txt") == 0)
 			printf("Configuration saved to fractal_config.txt\n");
 		else
@@ -147,7 +161,6 @@ void	handle_export_and_config(int key, t_data *data)
 	}
 	else if (key == XK_l)
 	{
-		// Load configuration
 		if (load_config(data, "fractal_config.txt") == 0)
 		{
 			printf("Configuration loaded from fractal_config.txt\n");
@@ -156,17 +169,8 @@ void	handle_export_and_config(int key, t_data *data)
 		else
 			printf("Failed to load configuration\n");
 	}
-	else if (key == XK_b)
+	else if (key == XK_p)
 	{
-		// Run benchmark
-		printf("Running benchmark...\n");
-		benchmark_fractal(data, 10);
+		profiler_print_stats();
 	}
-}
-
-void change_color_mode(t_data *data)
-{
-	data->color_mode = (data->color_mode + 1) % 3;
-	printf("Color mode: %d\n", data->color_mode);
-	render_fractal(data);
 }

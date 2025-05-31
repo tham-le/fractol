@@ -41,6 +41,8 @@ int	valid_fractal(char *name)
 		return (PHOENIX);
 	else if (!ft_strcmp(ft_strlowcase(name), "buffalo") || !ft_strcmp(name, "8"))
 		return (MANDELBAR);
+	else if (!ft_strcmp(ft_strlowcase(name), "multibrot") || !ft_strcmp(name, "9"))
+		return (MULTIBROT);
 	return (-1);
 }
 
@@ -72,9 +74,22 @@ int	get_julia_param(t_data *data, int argc, char **argv)
 */
 void	render_fractal(t_data *data)
 {
+	profiler_start(); // Profiling start
+
 	data->delta.re = (data->max.re - data->min.re) / (W_WIDTH - 1);
 	data->delta.im = (data->max.im - data->min.im) / (W_HEIGHT - 1);
 	
+	// Special handling for Barnsley Fern - it draws directly
+	if (data->fractal_index == BARNSLEY)
+	{
+		barnsley(data); // Assumes barnsley calls my_mlx_pixel_put directly
+		profiler_end(data);
+		mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
+		mlx_do_sync(data->mlx);
+		return;
+	}
+
+	// Call the appropriate fractal generation function (populates buffers)
 	if (data->fractal_index == MANDELBROT)
 	{
 		if (data->use_threading)
@@ -89,8 +104,6 @@ void	render_fractal(t_data *data)
 		else
 			julia(data);
 	}
-	else if (data->fractal_index == BARNSLEY)
-		barnsley(data);
 	else if (data->fractal_index == TRICORN)
 	{
 		if (data->use_threading)
@@ -104,10 +117,17 @@ void	render_fractal(t_data *data)
 		newton(data);
 	else if (data->fractal_index == PHOENIX)
 		phoenix(data);
-	else if (data->fractal_index == MANDELBAR)
+	else if (data->fractal_index == MANDELBAR) // Actually Buffalo
 		mandelbar(data);
+	else if (data->fractal_index == MULTIBROT)
+		multibrot(data);
+
+	// Now, color the pixels from the buffers
+	render_pixels_from_buffer(data);
 	
+	profiler_end(data); // Profiling end
 	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
+	mlx_do_sync(data->mlx);
 }
 
 /*

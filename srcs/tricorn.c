@@ -35,7 +35,8 @@ void	tricorn(t_data *f)
 				f->z.re = temp_re;
 				f->z.im = temp_im;
 			}
-			color(f, n, x, y, f->z);
+			f->iteration_buffer[y][x] = n;
+			f->z_buffer[y][x] = f->z;
 		}
 	}
 }
@@ -65,7 +66,8 @@ void	*tricorn_thread(void *thread_data)
 				z.re = temp_re;
 				z.im = temp_im;
 			}
-			color(f, n, x, y, z);
+			f->iteration_buffer[y][x] = n;
+			f->z_buffer[y][x] = z;
 		}
 	}
 	return (NULL);

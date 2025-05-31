@@ -37,7 +37,8 @@ void	burning_ship(t_data *f)
 				z.re = temp_re;
 				z.im = temp_im;
 			}
-			color(f, n, x, y, z);
+			f->iteration_buffer[y][x] = n;
+			f->z_buffer[y][x] = z;
 		}
 	}
 }
@@ -56,6 +57,13 @@ t_complex	complex_power(t_complex z, int n)
 		return (z);
 	if (n == 2)
 		return (init_complex(z.re * z.re - z.im * z.im, 2 * z.re * z.im));
+	if (n == 3)
+	{
+		double z2_re = z.re * z.re - z.im * z.im;
+		double z2_im = 2 * z.re * z.im;
+		return (init_complex(z2_re * z.re - z2_im * z.im, 
+							 z2_re * z.im + z2_im * z.re));
+	}
 	
 	r = sqrt(z.re * z.re + z.im * z.im);
 	theta = atan2(z.im, z.re);
@@ -110,7 +118,8 @@ void	newton(t_data *f)
 				if (check_newton_convergence(z))
 					break;
 			}
-			color(f, n, x, y, z);
+			f->iteration_buffer[y][x] = n;
+			f->z_buffer[y][x] = z;
 		}
 	}
 }
@@ -142,7 +151,8 @@ void	buffalo(t_data *f)
 				z.re = temp_re;
 				z.im = temp_im;
 			}
-			color(f, n, x, y, z);
+			f->iteration_buffer[y][x] = n;
+			f->z_buffer[y][x] = z;
 		}
 	}
 }
@@ -177,7 +187,8 @@ void	phoenix(t_data *f)
 				);
 				prev_z = temp;
 			}
-			color(f, n, x, y, z);
+			f->iteration_buffer[y][x] = n;
+			f->z_buffer[y][x] = z;
 		}
 	}
 }
@@ -223,3 +234,32 @@ void	multibrot(t_data *f) // This is line 68 in the original file.
 	}
 }
 */
+
+// Multibrot sets (generalization of Mandelbrot) from improvements/
+// Default power can be set in t_data or via a new mechanism
+void multibrot(t_data *f) // Changed signature for now, will adapt power later
+{
+    t_complex x_loop; // Use different name to avoid conflict if x,y are fields in t_data
+    int n_iter;
+    int power = f->fractal_power; // Assuming fractal_power exists in t_data
+
+    x_loop.im = -1;
+    while (++x_loop.im < W_HEIGHT)
+    {
+        x_loop.re = -1;
+        f->c.im = f->max.im - x_loop.im * f->delta.im;
+        while (++x_loop.re < W_WIDTH)
+        {
+            f->c.re = f->min.re + x_loop.re * f->delta.re;
+            f->z = f->c; // z0 = c
+            n_iter = -1;
+            while ((++n_iter < f->max_iter) && (f->z.re * f->z.re + f->z.im * f->z.im < 4))
+            {
+                t_complex temp = complex_power(f->z, power);
+                f->z = init_complex(temp.re + f->c.re, temp.im + f->c.im);
+            }
+            f->iteration_buffer[(int)x_loop.im][(int)x_loop.re] = n_iter;
+            f->z_buffer[(int)x_loop.im][(int)x_loop.re] = f->z;
+        }
+    }
+}

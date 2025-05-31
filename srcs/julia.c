@@ -33,7 +33,8 @@ void	julia(t_data *f)
 				f->z.re = temp_re;
 				f->z.im = temp_im;
 			}
-			color(f, n, x.re, x.im, f->z);
+			f->iteration_buffer[(int)x.im][(int)x.re] = n;
+			f->z_buffer[(int)x.im][(int)x.re] = f->z;
 		}
 	}
 }
@@ -61,7 +62,8 @@ void	*julia_thread(void *thread_data)
 				z.re = temp_re;
 				z.im = temp_im;
 			}
-			color(f, n, x.re, x.im, z);
+			f->iteration_buffer[(int)x.im][(int)x.re] = n;
+			f->z_buffer[(int)x.im][(int)x.re] = z;
 		}
 	}
 	return (NULL);
