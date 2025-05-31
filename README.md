@@ -15,8 +15,7 @@ This is a high-performance, feature-rich fractal explorer written in C, using Mi
 - Image export to **BMP and PPM** formats.
 - Animation export (zoom and color cycling).
 - Configuration system (save/load views and settings).
-- **Advanced performance profiling and benchmarking tools.**
-- Enhanced navigation: **Mouse panning (left-click drag)**, scroll-wheel zoom.
+- Navigation: **Mouse panning (left-click drag)**, scroll-wheel zoom.
 - Interactive Julia set parameter modification.
 
 ## 🧑‍💻 Installation
@@ -74,8 +73,7 @@ make
 ## 🏎️ Performance & Features
 - Multi-threaded rendering (toggle with 'T').
 - Anti-aliasing (toggle with 'A').
-- **Advanced benchmarking suite (press 'B').**
-- **Print detailed profiler statistics (press 'P').**
+
 - Export current view:
     - **Quick export (BMP with timestamp) (press 'E').**
     - (PPM export is available programmatically via `export_image`, can be hooked to a key if desired).
@@ -83,8 +81,7 @@ make
 - Save/load view configuration (press 'O', 'L').
 - **Mouse panning: Left-click and drag.**
 - Scroll wheel to zoom towards mouse pointer.
-- **Multibrot power adjustment (PageUp/PageDown when Multibrot is active).**
-- **Julia parameter adjustment: Q/D for real part, W/S for imaginary part.**
+
 
 ## 🎬 Spectacular Animation Features
 - **Enhanced Infinite Zoom (U)**: Smooth, targeted zoom with automatic color cycling and iteration scaling
