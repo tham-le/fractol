@@ -1,12 +1,12 @@
-# Fract'ol - Fractal Explorer
+# Fractol - Fractal Explorer
 
-![Fract'ol Banner](https://img.shields.io/badge/42-Paris-blue?style=for-the-badge&logo=42) ![C](https://img.shields.io/badge/C-Language-blue?style=for-the-badge&logo=c) ![MinilibX](https://img.shields.io/badge/MinilibX-Graphics-green?style=for-the-badge)
+![Fractol Banner](https://img.shields.io/badge/42-Paris-blue?style=for-the-badge&logo=42) ![C](https://img.shields.io/badge/C-Language-blue?style=for-the-badge&logo=c) ![MinilibX](https://img.shields.io/badge/MinilibX-Graphics-green?style=for-the-badge)
 
-> **Note:** This project is an extension of the original 42 School fract-ol subject. It incorporates features beyond the initial scope, aiming for a richer user experience and more comprehensive fractal exploration.
+> **Note:** This project is an extension of the original 42 School fract-ol subject. It incorporates features beyond the initial scope, aiming for a richer user experience and more comprehensive fractal exploration. It's not conform to the norm. and please enjoy the peer-learning in 42, don't copy
 
 ## 🚀 What is this?
 
-This is a high-performance, feature-rich fractal explorer written in C, using MinilibX for graphics. It started as a 42 project and has been expanded to include:
+This is a high-performancefractal explorer written in C, using MinilibX for graphics. It started as a 42 project and has been expanded to include:
 
 - Multiple fractal types: Mandelbrot, Julia, Burning Ship, Newton, Tricorn, Barnsley Fern, Mandelbar (Buffalo), and **Multibrot** (with adjustable power).
 - **13 beautiful, optimized color palettes** with real-time switching and smooth interpolation.
@@ -101,17 +101,6 @@ make
 - Barnsley Fern
 - **Multibrot (z -> z^N + c, power N adjustable via PageUp/PageDown)**
 
-## 🗺️ Project Structure
-
-```
-fractol/
-├── includes/         # Header files (*.h)
-├── srcs/             # Core source code (*.c)
-├── libft/            # Custom C library (libft.a)
-├── minilibx-linux/   # MinilibX graphics library
-├── improvements/     # Folder with prior experimental/additional code
-├── Makefile, README.md, etc.
-```
 
 ## 🏆 Beyond the 42 Subject
 This project has significantly expanded upon the original 42 requirements, featuring:
