@@ -10,6 +10,28 @@
 **Performance:** Multi-threaded rendering with 2-8x speed improvements
 **Export Formats:** BMP, PPM with animation support
 
+## Visual Showcase
+
+**High-quality fractal renders demonstrating mathematical precision and artistic beauty:**
+
+<div align="center">
+
+### Mandelbrot Set - Color Variations
+<img src="image/mandelbrot-smooth-color.bmp" width="300" alt="Mandelbrot Smooth Colors"/> <img src="image/mandelbrot-fire.bmp" width="300" alt="Mandelbrot Fire Palette"/>
+
+### Newton Fractal - Advanced Mathematics
+<img src="image/Newton.bmp" width="300" alt="Newton Fractal"/> <img src="image/Newton-rainbow.bmp" width="300" alt="Newton Rainbow"/>
+
+### Julia Set Collection - Parameter Exploration
+<img src="image/julia-1.bmp" width="200" alt="Julia Set 1"/> <img src="image/julia_2.bmp" width="200" alt="Julia Set 2"/> <img src="image/julia_3.bmp" width="200" alt="Julia Set 3"/>
+
+### Barnsley Fern - Nature-Inspired Fractals
+<img src="image/barnley.bmp" width="400" alt="Barnsley Fern"/>
+
+</div>
+
+*All images rendered in real-time with multi-threaded optimization*
+
 ### Key Features Beyond Original Assignment
 - **Multi-threaded rendering** - Automatic CPU core detection and workload distribution
 - **8 fractal types** - Mandelbrot, Julia, Burning Ship, Newton, Tricorn, Barnsley Fern, Mandelbar, Multibrot
