@@ -25,6 +25,8 @@
 ### Julia Set Collection - Parameter Exploration
 <img src="image/julia-1.bmp" width="200" alt="Julia Set 1"/> <img src="image/julia_2.bmp" width="200" alt="Julia Set 2"/> <img src="image/julia_3.bmp" width="200" alt="Julia Set 3"/>
 
+<img src="image/julia_4.bmp" width="200" alt="Julia Set 4"/> <img src="image/julia_5.bmp" width="200" alt="Julia Set 5"/> <img src="image/julia_6.bmp" width="200" alt="Julia Set 6"/> <img src="image/julia_7.bmp" width="200" alt="Julia Set 7"/>
+
 ### Barnsley Fern - Nature-Inspired Fractals
 <img src="image/barnley.bmp" width="400" alt="Barnsley Fern"/>
 
