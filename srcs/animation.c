@@ -5,7 +5,7 @@
 
 void enhanced_infinite_zoom(t_data *data)
 {
-	int frames = 300;
+	int frames = 2000;
 	double zoom_factor = 0.992;
 	double iter_increase = 1.001;
 	
@@ -46,12 +46,9 @@ void enhanced_infinite_zoom(t_data *data)
 		if (i % 30 == 0 && data->max_iter < 500) {
 			data->max_iter = (int)(data->max_iter * iter_increase) + 1;
 		}
-			
-		if (i % 40 == 0)
-			data->color_shift = (data->color_shift + 1) % MAX_COLOR_PALETTES;
 		
 		render_fractal(data);
-		usleep(35000);
+		usleep(5000);
 	}
 }
 
@@ -81,7 +78,7 @@ void spiral_zoom_animation(t_data *data)
 			data->max_iter += 5;
 		
 		render_fractal(data);
-		usleep(25000);
+		usleep(5000);
 	}
 }
 
@@ -118,7 +115,7 @@ void julia_morph_animation(t_data *data)
 			data->color_shift = (data->color_shift + 1) % MAX_COLOR_PALETTES;
 		
 		render_fractal(data);
-		usleep(40000);
+		usleep(5000);
 	}
 	
 	data->c.re = start_re;
@@ -188,7 +185,7 @@ void fractal_showcase_animation(t_data *data)
 				data->color_shift = (data->color_shift + 1) % MAX_COLOR_PALETTES;
 			
 			render_fractal(data);
-			usleep(50000); // 50ms per frame
+			usleep(5000); // 50ms per frame
 		}
 	}
 	
@@ -246,7 +243,7 @@ void color_palette_showcase(t_data *data)
 			}
 			
 			render_fractal(data);
-			usleep(25000); // 25ms per frame for smooth display
+			usleep(5000); // 5ms per frame for smooth display
 		}
 	}
 	

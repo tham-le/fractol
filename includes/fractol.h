@@ -12,8 +12,8 @@
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# define W_WIDTH 900
-# define W_HEIGHT 900
+# define W_WIDTH 1800
+# define W_HEIGHT 1800
 
 # define MANDELBROT			1
 # define JULIA				2
@@ -211,10 +211,6 @@ void		create_color_animation(t_data *data, const char *prefix, int frames);
 int			save_config(t_data *data, const char *filename);
 int			load_config(t_data *data, const char *filename);
 
-void		start_profiling(void);
-double		end_profiling(void);
-void		print_performance_stats(t_data *data);
-
 void		infinite_zoom(t_data *data);
 
 void render_pixels_from_buffer(t_data *data);
@@ -224,10 +220,6 @@ void		spiral_zoom_animation(t_data *data);
 void		julia_morph_animation(t_data *data);
 void		fractal_showcase_animation(t_data *data);
 void		color_palette_showcase(t_data *data);
-
-void		profiler_start(void);
-void		profiler_end(t_data *data);
-void		profiler_print_stats(void);
 
 # ifndef MIN
 #  define MIN(a,b) (((a)<(b))?(a):(b))

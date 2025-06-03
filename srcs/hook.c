@@ -60,7 +60,7 @@ int key_press(int key, t_data *data)
 	else if (key == XK_Page_Up || key == XK_Page_Down)
 		change_multibrot_power(key, data);
 	else if (key == XK_e || key == XK_z || key == XK_x || key == XK_o 
-		|| key == XK_l || key == XK_p || key == XK_P)
+		|| key == XK_l)
 		handle_export_and_config(key, data);
 	else if (key == XK_i)
 		infinite_zoom(data);

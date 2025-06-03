@@ -74,15 +74,12 @@ int	get_julia_param(t_data *data, int argc, char **argv)
 */
 void	render_fractal(t_data *data)
 {
-	profiler_start();
-
 	data->delta.re = (data->max.re - data->min.re) / (W_WIDTH - 1);
 	data->delta.im = (data->max.im - data->min.im) / (W_HEIGHT - 1);
 	
 	if (data->fractal_index == BARNSLEY)
 	{
 		barnsley(data);
-		profiler_end(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 		mlx_do_sync(data->mlx);
 		return;
@@ -115,14 +112,13 @@ void	render_fractal(t_data *data)
 		newton(data);
 	else if (data->fractal_index == PHOENIX)
 		phoenix(data);
-	else if (data->fractal_index == MANDELBAR) // Actually Buffalo
+	else if (data->fractal_index == MANDELBAR)
 		mandelbar(data);
 	else if (data->fractal_index == MULTIBROT)
 		multibrot(data);
 
 	render_pixels_from_buffer(data);
 	
-	profiler_end(data); // Profiling end
 	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 	mlx_do_sync(data->mlx);
 }

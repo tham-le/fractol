@@ -29,7 +29,7 @@ AR			= ar rcs
 SRC_FILES	=	main print_help color mandelbrot init \
 				clean hook control_keyboard julia\
 				control_mouse barnsley tricorn threading \
-				antialiasing export config benchmark \
+				antialiasing export config\
 				additional_fractals animation
 
 

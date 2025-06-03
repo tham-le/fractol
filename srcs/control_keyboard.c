@@ -169,8 +169,4 @@ void	handle_export_and_config(int key, t_data *data)
 		else
 			printf("Failed to load configuration\n");
 	}
-	else if (key == XK_p)
-	{
-		profiler_print_stats();
-	}
 }

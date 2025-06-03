@@ -52,11 +52,9 @@ static void	keyboard_controls(void)
 	ft_putendl("\t- Julia morphing animation (J) - Smooth parameter transitions (Julia sets only)");
 	ft_putendl("\t- Fractal showcase tour (H) - Auto-tour through all fractal types");
 	ft_putendl("\t- Color palette showcase (G) - Cycle through all 13 color palettes");
-	ft_putendl("\n\t\033[33mConfiguration & Profiling:\033[36m");
+	ft_putendl("\n\t\033[33mConfiguration:\033[36m");
 	ft_putendl("\t- Save current view/settings (O) - To fractal_config.txt");
 	ft_putendl("\t- Load view/settings (L) - From fractal_config.txt");
-	ft_putendl("\t- Run detailed benchmark (B)");
-	ft_putendl("\t- Print profiler statistics (P)");
 	ft_putendl("\n\t\033[33mSystem:\033[36m");
 	ft_putendl("\t- Close window and exit (ESC)");
 }
@@ -80,7 +78,6 @@ static void	features_info(void)
 	ft_putendl("\t\033[33mMulti-threading & Anti-aliasing:\033[36m For faster and smoother rendering.");
 	ft_putendl("\t\033[33mImage Export:\033[36m Save views as BMP or PPM. Create zoom/color animations.");
 	ft_putendl("\t\033[33mConfiguration System:\033[36m Save and load your favorite fractal views and settings.");
-	ft_putendl("\t\033[33mPerformance Tools:\033[36m In-depth benchmarking and render time profiling.");
 	ft_putendl("\t\033[33mInteractive Navigation:\033[36m Mouse panning, scroll zoom, keyboard controls.");
 }
 
